@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import android.speech.tts.TextToSpeech;
@@ -14,12 +15,17 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.learnenglish.R;
+import com.example.learnenglish.callback.UserCallBack;
 import com.example.learnenglish.callback.WordCallBack;
+import com.example.learnenglish.database.UserController;
 import com.example.learnenglish.database.WordController;
 import com.example.learnenglish.model.User;
 import com.example.learnenglish.model.Word;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -31,6 +37,7 @@ public class HomeFragment extends Fragment {
     private TextToSpeech textToSpeech;
 
     private WordController wordController;
+    private UserController userController;
     private TextView homeFrag_TV_word;
     private TextView homeFrag_TV_wordMean;
     private TextView homeFrag_TV_wordSentences;
@@ -66,6 +73,7 @@ public class HomeFragment extends Fragment {
 
     private void initVars() {
         initTextToSpeech(this.context);
+        userController = new UserController();
         wordController = new WordController();
         wordController.setWordCallBack(new WordCallBack() {
             @Override
@@ -74,6 +82,13 @@ public class HomeFragment extends Fragment {
                 homeFrag_TV_word.setText(word.getWord());
                 homeFrag_TV_wordMean.setText(word.getMean());
                 homeFrag_TV_wordSentences.setText(word.getSentence());
+
+                if(currentUser.getWordsKeys().contains(word.getUid())){
+//                    homeFrag_BTN_newWord.setText("Next Word");
+                    wordController.fetchRandomWord();
+                }else{
+//                    homeFrag_BTN_newWord.setText("Save Word");
+                }
             }
 
             @Override
@@ -84,10 +99,20 @@ public class HomeFragment extends Fragment {
 
         wordController.fetchRandomWord();
 
-
         homeFrag_BTN_newWord.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                boolean result = currentUser.addWordKey(currentWord.getUid());
+                if(result){
+                    userController.saveUser(currentUser).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if(task.isSuccessful()){
+                                Toast.makeText(context, "Word saved", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+                }
                 wordController.fetchRandomWord();
             }
         });
@@ -102,6 +127,10 @@ public class HomeFragment extends Fragment {
         homeFrag_BTN_startQuizButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if(currentUser.getWordsKeys().size() < QuizActivity.QUIZ_SIZE){
+                    Toast.makeText(context, "You need to save at lest " + QuizActivity.QUIZ_SIZE + " words to start the quiz", Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 Intent intent = new Intent(context, QuizActivity.class);
                 intent.putExtra(USER_INFO, currentUser);
                 startActivity(intent);

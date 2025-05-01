@@ -51,6 +51,7 @@ public class WordController extends DatabaseManager{
                             DocumentSnapshot documentSnapshot = task.getResult().getDocuments().get(i);
                             Word word = documentSnapshot.toObject(Word.class);
                             words.add(word);
+                            word.setUid(documentSnapshot.getId());
                         }
                         wordCallBack.onFetchWordsComplete(words);
                     }

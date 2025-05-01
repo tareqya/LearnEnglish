@@ -27,7 +27,7 @@ import java.util.Random;
 public class QuizActivity extends AppCompatActivity {
 
     private Quiz quiz;
-    private static final int QUIZ_SIZE = 5;
+    public static final int QUIZ_SIZE = 5;
     private WordController wordController;
     private TextView quiz_TV_question;
     private RadioGroup quiz_RG_options;
@@ -66,7 +66,16 @@ public class QuizActivity extends AppCompatActivity {
             @Override
             public void onFetchWordsComplete(ArrayList<Word> words) {
                 allWords = words;
-                ArrayList<Word> randomWords = getRandomWords(words, QUIZ_SIZE);
+                ArrayList<Word> savedWords = new ArrayList<>();
+                for(String wordKey : currentUser.getWordsKeys()){
+                    for (Word word : words){
+                        if(word.getUid().equals(wordKey)){
+                            savedWords.add(word);
+                        }
+                    }
+                }
+
+                ArrayList<Word> randomWords = getRandomWords(savedWords, QUIZ_SIZE);
                 buildQuiz(randomWords);
                 displayQuestion();
             }

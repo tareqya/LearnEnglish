@@ -3,6 +3,7 @@ package com.example.learnenglish.model;
 import com.google.firebase.firestore.Exclude;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
 public class User extends Uid implements Serializable {
     private String firstname;
@@ -10,9 +11,11 @@ public class User extends Uid implements Serializable {
     private String email;
     private String password;
     private int points;
+    private ArrayList<String> wordsKeys;
 
     public User(){
         points = 0;
+        wordsKeys = new ArrayList<>();
     }
 
     public String getFirstname() {
@@ -59,5 +62,15 @@ public class User extends Uid implements Serializable {
     public User setPoints(int points) {
         this.points = points;
         return this;
+    }
+
+    @Exclude
+    public boolean addWordKey(String key){
+        if(wordsKeys.contains(key)) return false;
+        wordsKeys.add(key);
+        return true;
+    }
+    public ArrayList<String> getWordsKeys (){
+        return this.wordsKeys;
     }
 }
