@@ -110,8 +110,6 @@ public class HomeFragment extends Fragment {
             }
         });
 
-        wordController.fetchRandomWord();
-
         homeFrag_BTN_newWord.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -178,5 +176,6 @@ public class HomeFragment extends Fragment {
 
     public void setUser(User user) {
         this.currentUser = user;
+        wordController.fetchRandomWord();
     }
 }

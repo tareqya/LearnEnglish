@@ -63,18 +63,24 @@ public class UserController extends DatabaseManager{
 
 
 
-    public void fetchTopUsers() {
+    public void fetchTopUsers(String uid) {
         this.db.collection(USERS_TABLE).
-                orderBy("points", Query.Direction.DESCENDING).limit(3).
+                orderBy("points", Query.Direction.DESCENDING).limit(5).
                 addSnapshotListener((querySnapshot, error) -> {
                     if (error != null) {
                         Log.e("Firestore", "Listen failed.", error);
                         return;
                     }
 
-                    List<LeaderboardModel> topPlayers = new ArrayList<>();
+                    ArrayList<LeaderboardModel> topPlayers = new ArrayList<>();
                     for (DocumentSnapshot doc : querySnapshot.getDocuments()) {
-                        LeaderboardModel player = doc.toObject(LeaderboardModel.class);
+                        User user = doc.toObject(User.class);
+                        user.setUid(doc.getId());
+
+                        LeaderboardModel player = new LeaderboardModel();
+                        player.username = user.getFirstname() + " " + user.getLastname();
+                        player.score = user.getPoints();
+                        player.isCurrentUser = user.getUid().equals(uid);
                         topPlayers.add(player);
                     }
                     if (userCallBack != null) {

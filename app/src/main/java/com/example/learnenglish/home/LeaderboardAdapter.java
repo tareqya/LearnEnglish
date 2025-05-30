@@ -17,7 +17,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class LeaderboardAdapter extends RecyclerView.Adapter<LeaderboardAdapter.ViewHolder> {
-
+        private List<LeaderboardModel> list;
+        private  Context activity;
         @NonNull
         @Override
         public ViewHolder onCreateViewHolder (@NonNull ViewGroup parent,
@@ -38,42 +39,36 @@ public class LeaderboardAdapter extends RecyclerView.Adapter<LeaderboardAdapter.
             LeaderboardModel model = list.get(position);
             holder.username.setText(model.username);
             holder.score.setText("Score: " + model.score);
-            holder.itemView.setTag(model);
-
-        }
-
-        @Override
-        public int getItemCount () {
-            return list.size();
-        }
-
-        class ViewHolder extends RecyclerView.ViewHolder {
-            TextView username, score;
-
-            public ViewHolder(@NonNull View itemView) {
-                super(itemView);
-                username =itemView.findViewById(R.id.tvUsername);
-                score=itemView.findViewById(R.id.tvScore);
-                itemView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                    activity.onItemClicked(getItemCount());
-                    }
-                });
+            holder.tvPosition.setText(position + 1 + "");
+            if(model.isCurrentUser){
+                holder.itemView.setBackgroundColor(activity.getResources().getColor(R.color.green));
             }
-        }
-    private List<LeaderboardModel> list;
-        ItemSelected activity;
 
-    public LeaderboardAdapter(List<LeaderboardModel> list) {
-        this.list = list;
+        }
+
+    @Override
+    public int getItemCount () {
+        return list.size();
     }
+
     public interface ItemSelected{
         void onItemClicked(int Index);
     }
     public LeaderboardAdapter(Context context, ArrayList<LeaderboardModel> list){
         this.list=list;
-        activity=(ItemSelected)context;
+        activity=context;
     }
+
+
+    class ViewHolder extends RecyclerView.ViewHolder {
+        TextView username, score, tvPosition;
+        public ViewHolder(@NonNull View itemView) {
+            super(itemView);
+            username =itemView.findViewById(R.id.tvUsername);
+            score=itemView.findViewById(R.id.tvScore);
+            tvPosition = itemView.findViewById(R.id.tvPosition);
+        }
+    }
+
 
 }

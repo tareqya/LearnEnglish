@@ -1,9 +1,11 @@
 package com.example.learnenglish.home;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -15,6 +17,7 @@ import android.widget.Toast;
 
 import com.example.learnenglish.R;
 import com.example.learnenglish.callback.UserCallBack;
+import com.example.learnenglish.database.AuthController;
 import com.example.learnenglish.database.DatabaseManager;
 import com.example.learnenglish.database.UserController;
 import com.example.learnenglish.model.User;
@@ -24,14 +27,14 @@ import java.util.List;
 
 public class LeaderBoard extends Fragment {
     private RecyclerView recyclerView;
-    private RecyclerView.LayoutManager layoutManager;
-    private List<LeaderboardModel> leaderboardList = new ArrayList<>();
     private LeaderboardAdapter adapter;
-    UserController userController ;
+    private UserController userController ;
+    private Context context;
 
 
-    public LeaderBoard() {
+    public LeaderBoard(Context context) {
         // Required empty public constructor
+        this.context = context;
     }
 
     @SuppressLint("MissingInflatedId")
@@ -40,12 +43,6 @@ public class LeaderBoard extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_leader_board, container, false);
         recyclerView=view.findViewById(R.id.rc1);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        adapter = new LeaderboardAdapter(leaderboardList);
-        recyclerView.setAdapter(adapter);
-        recyclerView.setHasFixedSize(true);
-        layoutManager=new LinearLayoutManager(getContext());
-        recyclerView.setLayoutManager(layoutManager);
         userController = new UserController();
         fetchLeaderboard();
 
@@ -62,19 +59,21 @@ userController.setUserCallBack(new UserCallBack() {
     }
 
     @Override
-    public void onUserInfoFetchComplete(List<LeaderboardModel> topPlayers) {
+    public void onUserInfoFetchComplete(ArrayList<LeaderboardModel> topPlayers) {
         if (topPlayers != null) {
-            leaderboardList.clear();
-            leaderboardList.addAll(topPlayers);
-            adapter.notifyDataSetChanged();
-            Log.d("Firestore", "Loaded " + topPlayers.size() + " Users");
+            LeaderboardAdapter adapter = new LeaderboardAdapter(context, topPlayers);
+            recyclerView.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false));
+            recyclerView.setHasFixedSize(true);
+            recyclerView.setItemAnimator(new DefaultItemAnimator());
+            recyclerView.setAdapter(adapter);
+
         } else {
            Toast.makeText(getContext(),"fail loading",Toast.LENGTH_SHORT).show();
         }
 
     }
 });
-
-        userController.fetchTopUsers();
+        String uid = new AuthController().getCurrentUser().getUid();
+        userController.fetchTopUsers(uid);
     }
 }

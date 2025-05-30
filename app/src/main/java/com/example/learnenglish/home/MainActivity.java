@@ -33,6 +33,7 @@ import com.example.learnenglish.model.User;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Random;
@@ -100,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
 
         profileFragment = new ProfileFragment(this);
         homeFragment = new HomeFragment(this);
-        leaderBoard=new LeaderBoard();
+        leaderBoard=new LeaderBoard(this);
 
         getSupportFragmentManager().beginTransaction().add(R.id.main_frame_home, homeFragment).commit();
         getSupportFragmentManager().beginTransaction().add(R.id.main_frame_profile, profileFragment).commit();
@@ -143,7 +144,9 @@ public class MainActivity extends AppCompatActivity {
                 homeFragment.setUser(user);
 
             }
-            public void onUserInfoFetchComplete(List<LeaderboardModel> topPlayers) {
+
+            @Override
+            public void onUserInfoFetchComplete(ArrayList<LeaderboardModel> topPlayers) {
 
             }
         });
