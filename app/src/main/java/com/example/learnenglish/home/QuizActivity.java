@@ -28,6 +28,7 @@ public class QuizActivity extends AppCompatActivity {
 
     private Quiz quiz;
     public static final int QUIZ_SIZE = 5;
+    public static final int FinalExam_SIZE = 50;
     private WordController wordController;
     private TextView quiz_TV_question;
     private RadioGroup quiz_RG_options;
@@ -154,12 +155,28 @@ public class QuizActivity extends AppCompatActivity {
     }
 
     public static String[] getRandomOptions(ArrayList<Word> options, int size) {
-        String[] randomOptions =  new String[size];
+        String[] randomOptions = new String[size];
         Random random = new Random();
-        for (int i = 0; i < size; i++) {
+        int count = 0;
+
+        while (count < size && count < options.size()) {
             int randomIndex = random.nextInt(options.size());
-            randomOptions[i] = options.get(randomIndex).getMean();
+            String mean = options.get(randomIndex).getMean();
+
+            boolean alreadyExists = false;
+            for (int i = 0; i < count; i++) {
+                if (randomOptions[i].equals(mean)) {
+                    alreadyExists = true;
+                    break;
+                }
+            }
+
+            if (!alreadyExists) {
+                randomOptions[count] = mean;
+                count++;
+            }
         }
+
         return randomOptions;
     }
 }

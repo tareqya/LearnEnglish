@@ -16,7 +16,7 @@
         />
 
     <FrameLayout
-        android:id="@+id/main_frame_status"
+        android:id="@+id/main_frame_leader"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/main_BN"

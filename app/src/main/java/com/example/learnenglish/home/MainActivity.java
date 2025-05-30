@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
@@ -33,16 +34,18 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 
 import java.util.Calendar;
+import java.util.List;
 import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
     private static String CHANNEL_ID = "2025";
     private HomeFragment homeFragment;
     private ProfileFragment profileFragment;
+    private LeaderBoard leaderBoard;
     private BottomNavigationView main_BN;
     private FrameLayout main_frame_home;
-    private FrameLayout main_frame_status;
     private FrameLayout main_frame_profile;
+    private FrameLayout main_frame_leader;
     private AuthController authController;
     private UserController userController;
 
@@ -62,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
 
         createNotificationChannel();
         Calendar randomNextDay = getRandomDayInNextWeek();
-        scheduleNotification(randomNextDay, "Did you learn english today?");
+        scheduleNotification(randomNextDay, "Did you have learned english today?");
     }
 
     @RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
@@ -87,7 +90,8 @@ public class MainActivity extends AppCompatActivity {
         main_BN = findViewById(R.id.main_BN);
         main_frame_home = findViewById(R.id.main_frame_home);
         main_frame_profile = findViewById(R.id.main_frame_profile);
-        main_frame_status = findViewById(R.id.main_frame_status);
+        main_frame_leader=findViewById(R.id.main_frame_leader);
+
 
     }
     private void initViews() {
@@ -96,9 +100,11 @@ public class MainActivity extends AppCompatActivity {
 
         profileFragment = new ProfileFragment(this);
         homeFragment = new HomeFragment(this);
+        leaderBoard=new LeaderBoard();
 
         getSupportFragmentManager().beginTransaction().add(R.id.main_frame_home, homeFragment).commit();
         getSupportFragmentManager().beginTransaction().add(R.id.main_frame_profile, profileFragment).commit();
+        getSupportFragmentManager().beginTransaction().add(R.id.main_frame_leader,leaderBoard).commit();
 
         main_frame_home.setVisibility(View.VISIBLE);
 
@@ -108,12 +114,18 @@ public class MainActivity extends AppCompatActivity {
                 if(item.getItemId() == R.id.menu_home){
                     main_frame_profile.setVisibility(View.INVISIBLE);
                     main_frame_home.setVisibility(View.VISIBLE);
-                    main_frame_status.setVisibility(View.INVISIBLE);
+                    main_frame_leader.setVisibility(View.INVISIBLE);
                 }else if(item.getItemId() == R.id.menu_profile){
                     main_frame_profile.setVisibility(View.VISIBLE);
                     main_frame_home.setVisibility(View.INVISIBLE);
-                    main_frame_status.setVisibility(View.INVISIBLE);
+                    main_frame_leader.setVisibility(View.INVISIBLE);
                 }
+                else if(item.getItemId() == R.id.menu_leaderboard){
+                    main_frame_profile.setVisibility(View.INVISIBLE);
+                    main_frame_home.setVisibility(View.INVISIBLE);
+                    main_frame_leader.setVisibility(View.VISIBLE);
+                }
+
                 return true;
             }
         });
@@ -124,10 +136,15 @@ public class MainActivity extends AppCompatActivity {
 
     private void FetchCurrentUserInfo(){
         userController.setUserCallBack(new UserCallBack() {
+
             @Override
             public void onUserInfoFetchComplete(User user) {
                 profileFragment.setUser(user);
                 homeFragment.setUser(user);
+
+            }
+            public void onUserInfoFetchComplete(List<LeaderboardModel> topPlayers) {
+
             }
         });
 

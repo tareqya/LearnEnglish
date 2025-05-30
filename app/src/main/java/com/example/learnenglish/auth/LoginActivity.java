@@ -29,6 +29,7 @@ public class LoginActivity extends AppCompatActivity {
     private Button login_BTN_signup;
     private AuthController authController;
     private ProgressBar login_progress_loading;
+    public static  boolean isLogged=false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,7 +78,7 @@ public class LoginActivity extends AppCompatActivity {
                 // validate input
                 String email = login_TF_email.getEditText().getText().toString();
                 String password = login_TF_password.getEditText().getText().toString();
-                if(email.isEmpty() || password.isEmpty()){
+                if (email.isEmpty() || password.isEmpty()) {
                     Toast.makeText(LoginActivity.this, "You must enter email and password!", Toast.LENGTH_SHORT).show();
                     return;
                 }

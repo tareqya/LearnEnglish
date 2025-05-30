@@ -73,5 +73,15 @@
             android:textStyle="bold"
             android:padding="12dp"
             android:layout_marginBottom="16dp"/>
+        <Button
+            android:id="@+id/homeFrag_BTN_startFinalExam"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Final Exam"
+            android:backgroundTint="#FF8C42"
+            android:textColor="#FFFFFF"
+            android:textStyle="bold"
+            android:padding="12dp"
+            android:layout_marginBottom="16dp"/>
     </LinearLayout>
 </FrameLayout>

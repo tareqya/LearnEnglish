@@ -6,7 +6,13 @@
         android:id="@+id/menu_home"
         android:enabled="true"
         />
-
+    <item
+        android:title="LeaderBoard"
+        android:icon="@drawable/baseline_leaderboard_24"
+        android:id="@+id/menu_leaderboard"
+        android:enabled="true"
+        >
+    </item>
     <item
         android:title="Profile"
         android:icon="@drawable/baseline_person_24"
@@ -14,4 +20,5 @@
         android:enabled="true"
         >
     </item>
+
 </menu>

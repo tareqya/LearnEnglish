@@ -13,6 +13,7 @@ activityCompose = "1.8.0"
 composeBom = "2024.09.00"
 
 [libraries]
+recyclerview = { module = "androidx.recyclerview:recyclerview", version = "1.2.1" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }

@@ -13,6 +13,7 @@ public class User extends Uid implements Serializable {
     private int points;
     private ArrayList<String> wordsKeys;
 
+
     public User(){
         points = 0;
         wordsKeys = new ArrayList<>();

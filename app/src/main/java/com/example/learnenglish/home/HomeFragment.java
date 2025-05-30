@@ -35,7 +35,6 @@ public class HomeFragment extends Fragment {
     public static final String USER_INFO = "user_info";
     private Context context;
     private TextToSpeech textToSpeech;
-
     private WordController wordController;
     private UserController userController;
     private TextView homeFrag_TV_word;
@@ -44,6 +43,7 @@ public class HomeFragment extends Fragment {
     private ImageView homeFrag_IV_speak;
     private Button homeFrag_BTN_newWord;
     private Button homeFrag_BTN_startQuizButton;
+    private Button homeFrag_BTN_FinalExamButton;
     private Word currentWord;
     private User currentUser;
 
@@ -58,6 +58,18 @@ public class HomeFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_home, container, false);
         findViews(view);
+        homeFrag_BTN_FinalExamButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (currentUser.getWordsKeys().size() < QuizActivity.FinalExam_SIZE) {
+                    Toast.makeText(context, "You need to save at lest " + QuizActivity.FinalExam_SIZE + " words to start the quiz", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                Intent intent = new Intent(context, QuizActivity.class);
+                intent.putExtra(USER_INFO, currentUser);
+                startActivity(intent);
+            }
+        });
         initVars();
         return view;
     }
@@ -69,6 +81,7 @@ public class HomeFragment extends Fragment {
         homeFrag_IV_speak = view.findViewById(R.id.homeFrag_IV_speak);
         homeFrag_BTN_newWord = view.findViewById(R.id.homeFrag_BTN_newWord);
         homeFrag_BTN_startQuizButton = view.findViewById(R.id.homeFrag_BTN_startQuizButton);
+        homeFrag_BTN_FinalExamButton = view.findViewById(R.id.homeFrag_BTN_startFinalExam);
     }
 
     private void initVars() {
@@ -83,10 +96,10 @@ public class HomeFragment extends Fragment {
                 homeFrag_TV_wordMean.setText(word.getMean());
                 homeFrag_TV_wordSentences.setText(word.getSentence());
 
-                if(currentUser.getWordsKeys().contains(word.getUid())){
+                if (currentUser.getWordsKeys().contains(word.getUid())) {
 //                    homeFrag_BTN_newWord.setText("Next Word");
                     wordController.fetchRandomWord();
-                }else{
+                } else {
 //                    homeFrag_BTN_newWord.setText("Save Word");
                 }
             }
@@ -103,11 +116,11 @@ public class HomeFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 boolean result = currentUser.addWordKey(currentWord.getUid());
-                if(result){
+                if (result) {
                     userController.saveUser(currentUser).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
-                            if(task.isSuccessful()){
+                            if (task.isSuccessful()) {
                                 Toast.makeText(context, "Word saved", Toast.LENGTH_SHORT).show();
                             }
                         }
@@ -127,7 +140,7 @@ public class HomeFragment extends Fragment {
         homeFrag_BTN_startQuizButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(currentUser.getWordsKeys().size() < QuizActivity.QUIZ_SIZE){
+                if (currentUser.getWordsKeys().size() < QuizActivity.QUIZ_SIZE) {
                     Toast.makeText(context, "You need to save at lest " + QuizActivity.QUIZ_SIZE + " words to start the quiz", Toast.LENGTH_SHORT).show();
                     return;
                 }
@@ -136,6 +149,8 @@ public class HomeFragment extends Fragment {
                 startActivity(intent);
             }
         });
+
+
     }
 
 
